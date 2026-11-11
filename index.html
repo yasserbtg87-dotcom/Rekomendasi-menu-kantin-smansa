@@ -1,0 +1,262 @@
+
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rekomendasi Menu Kantin</title>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div class="container">
+        <h1>Rekomendasi Menu Kantin</h1>
+        <p class="subtitle">
+            Temukan makanan dan minuman sesuai budget kamu!
+        </p>
+
+        <div class="form-group">
+            <label for="pilihan">Pilih Jenis Menu</label>
+            <select id="pilihan">
+                <option value="">-- Pilih Menu --</option>
+                <option value="makanan">Makanan</option>
+                <option value="minuman">Minuman</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="budget">Masukkan Budget (Rp)</label>
+            <input
+                type="number"
+                id="budget"
+                placeholder="Contoh: 12000"
+                min="0"
+            >
+        </div>
+
+        <button onclick="cariMenu()">
+            Cari Rekomendasi
+        </button>
+
+        <div id="hasil" class="hasil">
+            <p>Rekomendasi menu akan muncul di sini.</p>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background: linear-gradient(135deg, #dff6e4, #a8e6cf);
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
+
+.container {
+    background-color: white;
+    width: 100%;
+    max-width: 450px;
+    padding: 30px;
+    border-radius: 15px;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.15);
+}
+
+h1 {
+    text-align: center;
+    color: #218838;
+    margin-bottom: 10px;
+    font-size: 26px;
+}
+
+.subtitle {
+    text-align: center;
+    color: #666;
+    margin-bottom: 25px;
+    font-size: 14px;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: bold;
+    color: #333;
+}
+
+input, select {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    font-size: 15px;
+}
+
+input:focus, select:focus {
+    outline: none;
+    border-color: #28a745;
+}
+
+button {
+    width: 100%;
+    padding: 13px;
+    background-color: #28a745;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #218838;
+}
+
+.hasil {
+    margin-top: 25px;
+    padding: 15px;
+    background-color: #f1f8f3;
+    border-radius: 10px;
+    color: #333;
+}
+
+.hasil h3 {
+    color: #218838;
+    margin-bottom: 12px;
+}
+
+.hasil ul {
+    padding-left: 20px;
+}
+
+.hasil li {
+    margin-bottom: 10px;
+}
+
+.tidak-ada {
+    color: #dc3545;
+    font-weight: bold;
+}
+
+// Daftar menu makanan
+const menuMakanan = [
+    { nama: "Nasi Goreng", harga: 12000 },
+    { nama: "Mie Goreng", harga: 10000 },
+    { nama: "Nasi Kuning", harga: 10000 },
+    { nama: "Ayam Geprek", harga: 15000 },
+    { nama: "Bakso", harga: 13000 }
+];
+
+// Daftar menu minuman
+const menuMinuman = [
+    { nama: "Es Teh", harga: 5000 },
+    { nama: "Air Mineral", harga: 4000 },
+    { nama: "Es Jeruk", harga: 7000 },
+    { nama: "Jus Lemon", harga: 10000 }
+];
+
+// Fungsi format rupiah
+function formatRupiah(angka) {
+    return "Rp" + angka.toLocaleString("id-ID");
+}
+
+// Fungsi mencari rekomendasi menu
+function cariMenu() {
+
+    // Mengambil input siswa
+    const pilihan = document.getElementById("pilihan").value;
+    const budget = Number(
+        document.getElementById("budget").value
+    );
+
+    const hasil = document.getElementById("hasil");
+
+    // Memeriksa pilihan menu
+    if (pilihan === "") {
+        hasil.innerHTML =
+            '<p class="tidak-ada">Silakan pilih makanan atau minuman!</p>';
+        return;
+    }
+
+    // Memeriksa budget
+    if (
+        document.getElementById("budget").value === "" ||
+        !Number.isFinite(budget) ||
+        budget < 0
+    ) {
+        hasil.innerHTML =
+            '<p class="tidak-ada">Masukkan budget yang valid!</p>';
+        return;
+    }
+
+    // Menentukan daftar menu
+    let daftarMenu = [];
+    let jenisMenu = "";
+
+    if (pilihan === "makanan") {
+        daftarMenu = menuMakanan;
+        jenisMenu = "Makanan";
+    } else if (pilihan === "minuman") {
+        daftarMenu = menuMinuman;
+        jenisMenu = "Minuman";
+    }
+
+    // Membandingkan harga dengan budget
+    const rekomendasi = daftarMenu.filter(
+        menu => menu.harga <= budget
+    );
+
+    // Menampilkan hasil
+    if (rekomendasi.length > 0) {
+
+        let output = `
+            <h3>Rekomendasi ${jenisMenu}</h3>
+            <p>Budget kamu: <b>${formatRupiah(budget)}</b></p>
+            <br>
+            <ul>
+        `;
+
+        rekomendasi.forEach(menu => {
+            output += `
+                <li>
+                    ${menu.nama} -
+                    <b>${formatRupiah(menu.harga)}</b>
+                </li>
+            `;
+        });
+
+        output += "</ul>";
+
+        output += `
+            <p style="color:green; margin-top:15px;">
+                Selamat menikmati!
+            </p>
+        `;
+
+        hasil.innerHTML = output;
+
+    } else {
+
+        hasil.innerHTML = `
+            <h3>Rekomendasi ${jenisMenu}</h3>
+            <p class="tidak-ada">
+                Tidak ada menu yang sesuai dengan budget kamu.
+            </p>
+        `;
+    }
+}
